@@ -11,6 +11,8 @@ const Balance = require('../model/balance')
 const debug = require('debug')('ilp-plugin-virtual')
 const Token = require('../util/token')
 
+const lightning = require('lnrpc-client');
+
 const errors = require('../util/errors')
 const NotAcceptedError = errors.NotAcceptedError
 const InvalidFieldsError = errors.InvalidFieldsError
@@ -146,6 +148,9 @@ module.exports = class PluginVirtual extends EventEmitter2 {
         transfer,
         // erase our note to self
         { noteToSelf: undefined })])
+
+      // send the same payment over Lightning as well:
+      lightning.sendTransfer(transfer);
 
       // end now, so as not to duplicate any effects
       if (repeat) return
